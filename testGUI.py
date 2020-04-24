@@ -5,8 +5,13 @@ from subprocess import Popen
 import numpy as np
 
 layout = [  [sg.Text('Enter locations')],
-            [sg.Text('Backend Python Scripts'), sg.Input(key='-SCRIPTS-'), sg.FileBrowse() ], ##changed sg.FolderBrowse to sg.FileBrowse
-            [sg.Text('CNN Model File'), sg.Input(key='-MODEL-'), sg.FileBrowse() ], ##changed sg.FolderBrowse to sg.FileBrowse
+
+            ##changed sg.FolderBrowse to sg.FileBrowse
+            [sg.Text('Backend Python Scripts'), sg.Input(key='-SCRIPTS-'), sg.FileBrowse() ],
+
+            ##changed sg.FolderBrowse to sg.FileBrowse
+            [sg.Text('CNN Model File'), sg.Input(key='-MODEL-'), sg.FileBrowse() ],
+
             [sg.Text('Image Directory'), sg.Input(key='-TRAP-'), sg.FolderBrowse() ],
             [sg.Button('Ok'), sg.Button('Cancel')]  ]
 
@@ -15,7 +20,10 @@ layout2 = [ [sg.Text('Make sure your computer is charged or charging as the imag
 
 layout3 = [ [sg.Text('Begin Visualizing Processing Results (turn fancy numbers [.json] into red squares on camera trap images)')],
             [sg.Text('Backend Python Scripts'), sg.Input(key='-SCRIPTS_visual-'), sg.FileBrowse() ],
-            [sg.Text('Output JSON file created from previous step, most likely named: output.json, found in the same folder with your images'), sg.Input(key='-JSON_visual-'), sg.FileBrowse() ], ##changed sg.FolderBrowse to sg.FileBrowse
+
+            ##changed sg.FolderBrowse to sg.FileBrowse
+            [sg.Text('Output JSON file created from previous step, most likely named: output.json, found in the same folder with your images'), sg.Input(key='-JSON_visual-'), sg.FileBrowse() ],
+
             [sg.Text('Original Image Folder Location'), sg.Input(key='-DETECT_visual-'), sg.FolderBrowse() ],
             [sg.Text('New Image Folder Location to Create'), sg.Input(key='-RENDER_visual-'), sg.FolderBrowse() ],
             [sg.Text('Confidence Threshold for Detection [Scale of 0 - 1]'), sg.Input(key='-CONFIDENCE_visual-') ],
@@ -46,7 +54,9 @@ if event == 'Ok':
     sg.popup('Your locations:', values['-TRAP-'], values['-MODEL-'], values['-SCRIPTS-'])
 else:
     sg.popup('Cancelled')
-    sys.exit() #Need this to end program if 'cancel' button is selected
+
+    # Need this to end program if 'cancel' button is selected
+    sys.exit()
 
 #Batch processing UI pop-up
 event, process = sg.Window('Window Title', layout2).read(close=True)
@@ -56,7 +66,8 @@ if event == 'Ok':
     stdout, stderr = p.communicate()
 else:
     sg.popup('Cancelled')
-    sys.exit() #Need this to end program if 'cancel' button is selected
+    # Need this to end program if 'cancel' button is selected
+    sys.exit()
 
 #Visualization UI Pop-up
 event, visualization = sg.Window('Window Title', layout3).read(close=True)
@@ -87,4 +98,6 @@ if event == 'Ok':
     #sg.popup('Your locations:', visualization['-TRAP-'], values['-MODEL-'], values['-SCRIPTS-'])
 else:
     sg.popup('Cancelled')
-    sys.exit() #Need this to end program if 'cancel' button is selected
+
+    # Need this to end program if 'cancel' button is selected
+    sys.exit()
