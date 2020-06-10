@@ -3,14 +3,41 @@ import os
 import sys
 from subprocess import Popen
 import numpy as np
+import csv
+
+import configparser
+
+#initializes configparser
+config = configparser.ConfigParser()
+config.read('test.ini')
+
+Batch_Detector_Loc = config['default']['batch_detector_script_file_location']
+Visual_Output_Loc = config['default']['visualization_script_file_location']
+Model_Loc = config['default']['model_location']
+
+#test add for settings window
+def settings_window():
+
+    layout = [[sg.Text('The second form is small \nHere to show that opening a window using a window works')],
+              [sg.OK()]]
+
+    window = sg.Window('Second Form', layout)
+    event, values = window.read()
+    window.close()
+
+#added in to see if a menu bar can be easily added without major code rewrites
+menu_def = [['&File', ['&Properties', 'E&xit' ]]]
 
 layout = [  [sg.Text('Enter locations')],
 
-            ##changed sg.FolderBrowse to sg.FileBrowse
-            [sg.Text('Backend Python Scripts'), sg.Input(key='-SCRIPTS-'), sg.FileBrowse() ],
+            #test add of menu
+            [sg.Menu(menu_def, tearoff=False, pad=(20,1))],
 
             ##changed sg.FolderBrowse to sg.FileBrowse
-            [sg.Text('CNN Model File'), sg.Input(key='-MODEL-'), sg.FileBrowse() ],
+            #[sg.Text('Backend Python Scripts'), sg.Input(key='-SCRIPTS-'), sg.FileBrowse() ],
+
+            ##changed sg.FolderBrowse to sg.FileBrowse
+            #[sg.Text('CNN Model File'), sg.Input(key='-MODEL-'), sg.FileBrowse() ],
 
             [sg.Text('Image Directory'), sg.Input(key='-TRAP-'), sg.FolderBrowse() ],
             [sg.Button('Ok'), sg.Button('Cancel')]  ]
@@ -32,6 +59,8 @@ layout3 = [ [sg.Text('Begin Visualizing Processing Results (turn fancy numbers [
 #script, model, and image location input UI pop-up
 event, values = sg.Window('Window Title', layout, default_element_size=(20,1), text_justification='right', auto_size_text=False).read(close=True)
 
+#sequence = [str(data[0]), str(data[1])]
+
 if event == 'Ok':
     directory = 'C:\\git\\cameratrapsGUI\\bat'
     with open(os.path.join(directory, 'batchprocessdetections.bat'), 'w') as OPATH:
@@ -41,9 +70,9 @@ if event == 'Ok':
                           '\n',
                           'python',
                           ' ',
-                          values['-SCRIPTS-'],
+                          Batch_Detector_Loc,
                           ' ',
-                          values['-MODEL-'],
+                          Model_Loc,
                           ' ',
                           values['-TRAP-'],
                           ' ',
@@ -51,12 +80,42 @@ if event == 'Ok':
                           '/out.json',
                           ' ',
                           '--recursive'])
-    sg.popup('Your locations:', values['-TRAP-'], values['-MODEL-'], values['-SCRIPTS-'])
+    sg.popup('Your locations:', values['-TRAP-'], Batch_Detector_Loc, Model_Loc)
+
+#test add for properties to open settings window
+elif event == 'Properties':
+    settings_window()
 else:
     sg.popup('Cancelled')
 
-    # Need this to end program if 'cancel' button is selected
+    #Need this to end program if 'cancel' button is selected
     sys.exit()
+
+#if event == 'Ok':
+#    directory = 'C:\\git\\cameratrapsGUI\\bat'
+#    with open(os.path.join(directory, 'batchprocessdetections.bat'), 'w') as OPATH:
+#        OPATH.writelines(['call c:\\Users\\Jonathan\\Miniconda3\\Scripts\\activate.bat cameratraps-detector',
+#                          '\n',
+#                          'set PYTHONPATH=c:\\git\\cameratraps;c:\\git\\ai4eutils',
+#                          '\n',
+#                          'python',
+#                          ' ',
+#                          data[0],
+#                          ' ',
+#                          data[1],
+#                          ' ',
+#                          values['-TRAP-'],
+#                          ' ',
+#                          values['-TRAP-'],
+#                          '/out.json',
+#                          ' ',
+#                          '--recursive'])
+#    sg.popup('Your locations:', values['-TRAP-'], values['-MODEL-'], values['-SCRIPTS-'])
+#else:
+#    sg.popup('Cancelled')
+
+    # Need this to end program if 'cancel' button is selected
+#    sys.exit()
 
 #Batch processing UI pop-up
 event, process = sg.Window('Window Title', layout2).read(close=True)
